@@ -28,7 +28,7 @@ Stop Ralph after the current task completes, preserving state:
 touch <spec_dir>/.ralph/.stop
 
 # Example:
-touch specs/001-modern-stack-refactor/.ralph/.stop
+touch specs/001-my-feature/.ralph/.stop
 ```
 
 Ralph will:
@@ -40,7 +40,7 @@ Ralph will:
 **From Claude Code**, use this pattern:
 ```bash
 # Graceful stop
-SPEC_DIR="specs/001-modern-stack-refactor"
+SPEC_DIR="specs/001-my-feature"
 touch "$SPEC_DIR/.ralph/.stop"
 echo "Stop file created - Ralph will stop after current task"
 ```
@@ -91,7 +91,7 @@ Ralph spawns a Claude Code session for each task. Use the included helper script
 .claude/skills/workspace-ralph-orchestrator/ralph-context.sh <spec_dir>
 
 # Example:
-.claude/skills/workspace-ralph-orchestrator/ralph-context.sh specs/001-modern-stack-refactor --simple --loop
+.claude/skills/workspace-ralph-orchestrator/ralph-context.sh specs/001-my-feature --simple --loop
 ```
 
 This shows:
@@ -111,8 +111,10 @@ This shows:
 If you need more detail:
 
 ```bash
-# Find most recently modified session files
-ls -lt ~/.claude/projects/-Users-jj-armadaquadrat-clients-thisisavantgarde/*.jsonl | head -5
+# Find most recently modified session files for your current project
+PROJECT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+CLAUDE_PROJECT_PATH="$HOME/.claude/projects/-$(echo "$PROJECT_ROOT" | tr '/' '-' | sed 's/^-//')"
+ls -lt "$CLAUDE_PROJECT_PATH"/*.jsonl | head -5
 
 # Check which Claude processes are running
 ps aux | grep claude | grep -v grep
@@ -178,8 +180,9 @@ tmux send-keys -t "ralph-$SPEC_NAME" '<ralph_path>/ralph.sh start specs/<spec_na
 Example:
 ```bash
 tmux kill-session -t ralph-001 2>/dev/null
-tmux new-session -d -s ralph-001 -c "/Users/jj/armadaquadrat/clients/thisisavantgarde"
-tmux send-keys -t ralph-001 './t-0_speckit-ralph/lib/ralph.sh start specs/001-modern-stack-refactor/' Enter
+PROJECT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+tmux new-session -d -s ralph-001 -c "$PROJECT_ROOT"
+tmux send-keys -t ralph-001 './ralph start specs/001-my-feature/' Enter
 ```
 
 ### Auto-Open Context Viewer (Default: On)
@@ -189,15 +192,15 @@ When starting Ralph, automatically open the context viewer in a separate Warp ta
 **Complete start with context viewer:**
 ```bash
 # Set variables
-SPEC_DIR="specs/001-modern-stack-refactor"
+SPEC_DIR="specs/001-my-feature"
 SPEC_NAME="010"
-PROJECT_ROOT="/Users/jj/armadaquadrat/clients/thisisavantgarde"
+PROJECT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 SKILL_PATH="$PROJECT_ROOT/.claude/skills/workspace-ralph-orchestrator"
 
 # Start Ralph in tmux
 tmux kill-session -t ralph-$SPEC_NAME 2>/dev/null
 tmux new-session -d -s ralph-$SPEC_NAME -c "$PROJECT_ROOT"
-tmux send-keys -t ralph-$SPEC_NAME "./t-0_speckit-ralph/lib/ralph.sh start $SPEC_DIR/" Enter
+tmux send-keys -t ralph-$SPEC_NAME "./ralph start $SPEC_DIR/" Enter
 
 # Auto-open context viewer in new Warp tab (default: on)
 OPEN_CONTEXT_VIEWER=${OPEN_CONTEXT_VIEWER:-true}
@@ -222,13 +225,13 @@ OPEN_CONTEXT_VIEWER=false  # Set before starting Ralph
 .claude/skills/workspace-ralph-orchestrator/ralph-context.sh <spec_dir> --simple --loop
 
 # Example:
-.claude/skills/workspace-ralph-orchestrator/ralph-context.sh specs/001-modern-stack-refactor --simple --loop
+.claude/skills/workspace-ralph-orchestrator/ralph-context.sh specs/001-my-feature --simple --loop
 ```
 
 **Available flags:**
 | Flag | Description |
 |------|-------------|
-| `--loop` | Auto-refresh every 5 seconds (instant frame render) |
+| `--loop` | Auto-refresh (default 1s; override with `RALPH_CONTEXT_REFRESH_SECS`) |
 | `--simple` | Single-column layout (less visual noise) |
 | `--width=N` | Force specific terminal width |
 
@@ -401,10 +404,12 @@ Ralph's Claude may run commands in background. Check output files:
 
 ```bash
 # List recent task outputs
-ls -lt /private/tmp/claude/-Users-jj-armadaquadrat-clients-thisisavantgarde/tasks/*.output | head -5
+PROJECT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+CLAUDE_TMP_PATH="/private/tmp/claude/-$(echo "$PROJECT_ROOT" | tr '/' '-' | sed 's/^-//')/tasks"
+ls -lt "$CLAUDE_TMP_PATH"/*.output | head -5
 
 # Tail active output
-tail -f /private/tmp/claude/-Users-jj-armadaquadrat-clients-thisisavantgarde/tasks/<task_id>.output
+tail -f "$CLAUDE_TMP_PATH"/<task_id>.output
 ```
 
 ## Opening View for User
@@ -461,7 +466,9 @@ osascript -e 'tell application "Warp" to activate' \
 
 2. Check session file activity:
    ```bash
-   find ~/.claude/projects/-Users-jj-armadaquadrat-clients-thisisavantgarde/ -name "*.jsonl" -mmin -5
+   PROJECT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+   CLAUDE_PROJECT_PATH="$HOME/.claude/projects/-$(echo "$PROJECT_ROOT" | tr '/' '-' | sed 's/^-//')"
+   find "$CLAUDE_PROJECT_PATH" -name "*.jsonl" -mmin -5
    ```
 
 3. View Claude's recent actions (see "Viewing Claude Session Context" above)
