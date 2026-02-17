@@ -140,7 +140,7 @@ print_banner() {
  | |_) / _` | | '_ \| '_ \
  |  _ < (_| | | |_) | | | |
  |_| \_\__,_|_| .__/|_| |_|
-              |_|  Wiggum Loop
+              |_|  Wiggum Loop · Spec-Kit Extension by T-0
 EOF
     echo -e "${NC}"
     echo "Version $VERSION - Autonomous Task Execution"

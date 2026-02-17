@@ -13,14 +13,14 @@
 
 Execute tasks from `tasks.md` with fresh Claude context per task and build/test verification between iterations.
 
-> **⚠️ This is a TEMPLATE repository**
+> **Open-source baseline**
 >
-> Clone or fork this repo for each workspace/project you work on. The Ralph harness is meant to be customized per-project with:
+> This repository is intended as a reusable baseline. You can customize it per project with:
 > - `ralph-global.md` - Workspace-global skill mappings (copied on install, customize per-project)
 > - `ralph-spec.md` - Feature-specific prompts (per spec)
 > - Project-specific config (`.specify/ralph/config.sh`)
 >
-> **Do NOT push changes back to the main template.** Keep your customizations in your workspace fork.
+> Contributions are welcome when they are generally useful. Keep project-specific logic in your own repository.
 
 ## Relationship to Spec Kit
 
@@ -67,9 +67,20 @@ Two modes: Planning (gap analysis) → Building (implementation), with Jobs-to-B
 | **Timeout** | None | 120-min per task (hardcoded) |
 | **State** | `IMPLEMENTATION_PLAN.md` | `progress.json`, `session.log`, `costs.json` |
 
+## Why Spec-Kit?
+
+Spec-Kit gives you a clear, spec-driven development flow:
+
+- **Shared intent** - `spec.md` captures what should be built
+- **Execution plan** - `plan.md` documents architecture and decisions
+- **Task breakdown** - `tasks.md` creates actionable, ordered work
+- **Team alignment** - less ambiguity between planning and implementation
+
+Ralph builds on top of this flow and automates the execution phase.
+
 ## Why Ralph?
 
-Spec kit creates great specifications, plans, and task lists. But executing 50+ tasks manually is tedious. Ralph automates this:
+Executing long task lists manually is tedious and fragile. Ralph automates this:
 
 - **Fresh context per task** - Avoids context compaction, keeps Claude focused
 - **Build/test backpressure** - Fails fast, retries, blocks when stuck
@@ -87,11 +98,11 @@ git clone https://github.com/T-0-co/t-0-spec-kit-ralph.git
 cd your-project
 ./path/to/speckit-ralph/install.sh --symlink
 
-# Include orchestrator command + dashboard skill in target project
-./path/to/speckit-ralph/install.sh --copy --with-orchestrator-skill
-
-# Or copy mode (standalone)
+# Copy mode (standalone, includes orchestrator command + skill by default)
 ./path/to/speckit-ralph/install.sh --copy
+
+# Copy mode without orchestrator command/skill
+./path/to/speckit-ralph/install.sh --copy --no-orchestrator-skill
 
 # Or install globally
 ./path/to/speckit-ralph/install.sh --global
@@ -649,6 +660,13 @@ MIT
 - Questions and support: `team@t-0.co`
 - Issues and PRs are welcome
 - Contributions are welcome
+
+## Contributing
+
+- Open an issue first for larger changes or behavior changes.
+- Keep pull requests focused and small.
+- Avoid project-specific paths, secrets, or local environment assumptions.
+- Include a short validation note (what was tested).
 
 ## Credits
 
