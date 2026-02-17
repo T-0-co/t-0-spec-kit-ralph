@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# ralph - Entry point for Ralph Wiggum Loop
+# Part of speckit-ralph
+
+set -euo pipefail
+
+# Resolve script location (handles symlinks)
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Check if lib directory exists relative to bin
+if [[ -d "$SCRIPT_PATH/../lib" ]]; then
+    LIB_DIR="$SCRIPT_PATH/../lib"
+elif [[ -d "$SCRIPT_PATH/lib" ]]; then
+    LIB_DIR="$SCRIPT_PATH/lib"
+else
+    # Check for installed location in .specify
+    INSTALLED_LIB="$(pwd)/.specify/ralph/lib"
+    if [[ -d "$INSTALLED_LIB" ]]; then
+        LIB_DIR="$INSTALLED_LIB"
+    else
+        echo "Error: Could not find ralph lib directory" >&2
+        exit 1
+    fi
+fi
+
+# Execute main orchestrator
+exec "$LIB_DIR/ralph.sh" "$@"
