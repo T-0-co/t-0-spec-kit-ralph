@@ -17,7 +17,7 @@ Execute tasks from `tasks.md` with fresh Claude context per task and build/test 
 >
 > This repository is intended as a reusable baseline. You can customize it per project with:
 > - `ralph-global.md` - Workspace-global skill mappings (copied on install, customize per-project)
-> - `ralph-spec.md` - Feature-specific prompts (per spec)
+> - `ralph-spec.md` - Feature-specific prompts (per spec, optional and complementary to harness .claude/claude.md)
 > - Project-specific config (`.specify/ralph/config.sh`)
 >
 > Contributions are welcome when they are generally useful. Keep project-specific logic in your own repository.
@@ -30,11 +30,11 @@ Ralph is designed to work with repositories using [spec kit](https://github.com/
 /speckit.specify → /speckit.plan → /speckit.tasks → /speckit.implement
 ```
 
-Ralph serves as an **alternative to `/speckit.implement`** for autonomous execution of `tasks.md`. Instead of running tasks in a single Claude session, Ralph executes each task with fresh context, avoiding context compaction on large task lists.
+Ralph serves as an **alternative to `/speckit.implement`** for autonomous execution of `tasks.md`. Instead of running tasks in a single Claude session, Ralph executes each task with fresh context, avoiding context compaction on large task lists. Each task will spawn it's own, individual Claude Code session. 
 
-**Not a hard requirement:** Ralph works with any `tasks.md` following the format below. It can be adapted to other specification frameworks or used standalone with manually created task lists.
+**Spec Kit is not a hard requirement:** Ralph works with any `tasks.md` following the format below. It can be adapted to other specification frameworks or can be used standalone with manually created task lists.
 
-**Experimental:** This is T-0's adaptation of [Huntley's Ralph Wiggum technique](https://ghuntley.com/loop/), currently being evaluated against Claude Code's built-in autonomous development loops. Future improvements may include parallelization and tighter spec kit integration.
+**Experimental:** This is T-0's adaptation of [Huntley's Ralph Wiggum technique](https://ghuntley.com/loop/), currently being evaluated against Claude Code's built-in autonomous development loops. Future improvements may include parallelization and tighter spec kit integration. We use this as a reliable daily-driver in our own projects, so we are curious if it helps anyone else.
 
 ## What's Different from Original Ralph
 
