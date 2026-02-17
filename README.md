@@ -1,5 +1,14 @@
 # speckit-ralph
 
+```text
+  ____       _       _
+ |  _ \ __ _| |_ __ | |__
+ | |_) / _` | | '_ \| '_ \
+ |  _ < (_| | | |_) | | | |
+ |_| \_\__,_|_| .__/|_| |_|
+              |_|  Wiggum Loop · Spec-Kit Extension by T-0
+```
+
 **Ralph Wiggum Loop** `v0.1.0` - T-0's experimental adaptation of [Geoff Huntley's Ralph Wiggum technique](https://ghuntley.com/loop/) for autonomous task execution.
 
 Execute tasks from `tasks.md` with fresh Claude context per task and build/test verification between iterations.
@@ -26,15 +35,6 @@ Ralph serves as an **alternative to `/speckit.implement`** for autonomous execut
 **Not a hard requirement:** Ralph works with any `tasks.md` following the format below. It can be adapted to other specification frameworks or used standalone with manually created task lists.
 
 **Experimental:** This is T-0's adaptation of [Huntley's Ralph Wiggum technique](https://ghuntley.com/loop/), currently being evaluated against Claude Code's built-in autonomous development loops. Future improvements may include parallelization and tighter spec kit integration.
-
-```
-  ____       _       _
- |  _ \ __ _| |_ __ | |__
- | |_) / _` | | '_ \| '_ \
- |  _ < (_| | | |_) | | | |
- |_| \_\__,_|_| .__/|_| |_|
-              |_|  Wiggum Loop
-```
 
 ## What's Different from Original Ralph
 
@@ -81,11 +81,14 @@ Spec kit creates great specifications, plans, and task lists. But executing 50+ 
 
 ```bash
 # Clone the repo
-git clone https://github.com/T-0-co/speckit-ralph.git
+git clone https://github.com/T-0-co/t-0-spec-kit-ralph.git
 
 # Install into your project (symlink mode - recommended for development)
 cd your-project
 ./path/to/speckit-ralph/install.sh --symlink
+
+# Include orchestrator command + dashboard skill in target project
+./path/to/speckit-ralph/install.sh --copy --with-orchestrator-skill
 
 # Or copy mode (standalone)
 ./path/to/speckit-ralph/install.sh --copy

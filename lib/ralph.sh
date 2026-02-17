@@ -332,6 +332,22 @@ find_tasks_file() {
     fi
 }
 
+preview_tasks() {
+    local tasks_file="$1"
+
+    echo "=== Ralph Dry Run Preview ==="
+    "$SCRIPT_DIR/task-parser.sh" "$tasks_file" --json | jq -r --argjson start_phase "$START_PHASE" '
+        .tasks
+        | map(select(.completed == false and .phase >= $start_phase))
+        | if length == 0 then
+            "No pending tasks to run."
+          else
+            .[]
+            | "Phase \(.phase) | \(.id)\(if .parallel then " [P]" else "" end)\(if .user_story then " [\(.user_story)]" else "" end): \(.description)"
+          end
+    '
+}
+
 # Execute a single task with Claude
 execute_task() {
     local spec_dir="$1"
@@ -869,6 +885,12 @@ main() {
     fi
 
     log INFO "Found tasks: $tasks_file"
+
+    # Dry run mode: preview tasks and exit without state/commit changes
+    if [[ "$DRY_RUN" == "true" ]]; then
+        preview_tasks "$tasks_file"
+        exit 0
+    fi
 
     # Find project root
     # Structure: PROJECT_ROOT/.specify/specs/SPEC_NAME/

@@ -11,6 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_MODE="symlink"  # symlink or copy
 TARGET_DIR=""
 GLOBAL_INSTALL=false
+INSTALL_ORCHESTRATOR_SKILL=false
 
 print_banner() {
     cat <<'EOF'
@@ -35,6 +36,8 @@ Install Ralph Wiggum Loop extension for spec kit.
 Options:
   --symlink     Create symlinks to source (default, for development)
   --copy        Copy files to target (for standalone installation)
+  --with-orchestrator-skill
+                Install `/ralph` command + `workspace-ralph-orchestrator` skill into target `.claude/`
   --global      Install globally to ~/.local/bin
   --uninstall   Remove Ralph from target project
   --help        Show this help
@@ -51,6 +54,9 @@ Examples:
 
   # Copy mode (no symlinks)
   ./install.sh --copy /path/to/project
+
+  # Copy mode + orchestrator command/skill
+  ./install.sh --copy --with-orchestrator-skill /path/to/project
 
   # Uninstall from project
   ./install.sh --uninstall /path/to/project
@@ -123,6 +129,26 @@ install_to_project() {
         echo "Created ralph-global.md (customize with your project's skills)"
     else
         echo "ralph-global.md already exists (skipped)"
+    fi
+
+    # Optionally install Claude command + orchestrator skill into target project
+    if [[ "$INSTALL_ORCHESTRATOR_SKILL" == "true" ]]; then
+        local target_claude_dir="$target/.claude"
+        mkdir -p "$target_claude_dir/commands" "$target_claude_dir/skills"
+
+        if [[ "$mode" == "symlink" ]]; then
+            ln -sf "$SCRIPT_DIR/.claude/commands/ralph.md" "$target_claude_dir/commands/ralph.md"
+            ln -sfn "$SCRIPT_DIR/.claude/skills/workspace-ralph-orchestrator" "$target_claude_dir/skills/workspace-ralph-orchestrator"
+            echo "Installed orchestrator command/skill (symlink)"
+        else
+            if [[ ! -f "$target_claude_dir/commands/ralph.md" ]]; then
+                cp "$SCRIPT_DIR/.claude/commands/ralph.md" "$target_claude_dir/commands/ralph.md"
+            fi
+            if [[ ! -d "$target_claude_dir/skills/workspace-ralph-orchestrator" ]]; then
+                cp -r "$SCRIPT_DIR/.claude/skills/workspace-ralph-orchestrator" "$target_claude_dir/skills/"
+            fi
+            echo "Installed orchestrator command/skill (copy)"
+        fi
     fi
 
     # Create convenience script in project root
@@ -216,6 +242,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --copy)
             INSTALL_MODE="copy"
+            shift
+            ;;
+        --with-orchestrator-skill)
+            INSTALL_ORCHESTRATOR_SKILL=true
             shift
             ;;
         --global)
