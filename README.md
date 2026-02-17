@@ -124,7 +124,7 @@ cd your-project
 # With budget limit ($20 max)
 ./ralph --budget 20 specs/001-feature/
 
-# With Slack notifications (requires T0_HUB_TOKEN)
+# With Slack notifications (optional placeholder integration)
 ./ralph --slack --slack-channel "#dev" specs/001-feature/
 
 # With worktree isolation (parallel development)
@@ -503,7 +503,7 @@ Ralph supports hierarchical configuration:
 | `WORKTREE_ENABLED` | `false` | Enable git worktree isolation |
 | `WORKTREE_BASE` | `""` | Parent directory for worktrees |
 | `FEATURE_BRANCH` | `""` | Branch name for worktree |
-| `SLACK_ENABLED` | `false` | Enable Slack notifications (placeholder) |
+| `SLACK_ENABLED` | `false` | Enable Slack notifications (optional placeholder) |
 | `SLACK_CHANNEL` | `""` | Slack channel for notifications |
 | `RALPH_SPEC_LINES` | `0` | Lines of spec.md to include (0 = full) |
 | `RALPH_PLAN_LINES` | `0` | Lines of plan.md to include (0 = full) |
@@ -526,7 +526,7 @@ RALPH_DATA_MODEL_LINES=0     # Include full data-model.md
 RALPH_RESEARCH_LINES=0       # Include full research.md
 RALPH_QUICKSTART_LINES=0     # Include full quickstart.md
 
-# Slack notifications (placeholder - requires T0_HUB_TOKEN)
+# Slack notifications (optional placeholder)
 SLACK_ENABLED=false
 SLACK_CHANNEL="#dev-automation"
 ```
@@ -555,8 +555,8 @@ Do NOT modify backend code.
 ### Environment Variables
 
 ```bash
-# Slack notifications (optional, currently inactive placeholder)
-export T0_HUB_TOKEN="<jwt-token>"  # For t0-mcp-hub Slack integration
+# Optional integrations
+# Configure Slack adapter/token in your own environment if you enable --slack.
 
 # Context truncation (override config files)
 export RALPH_SPEC_LINES=100  # Truncate spec to 100 lines
@@ -584,7 +584,7 @@ Located at `.claude/skills/workspace-ralph-orchestrator/`, this skill provides:
 - **Session inspection** - View what Claude is doing, which skills it's using
 - **Health checks** - Docker container status, port availability
 
-The skill is symlinked from [t0-mcp-hub](https://github.com/T-0-co/t-0-hub) and contains comprehensive documentation for all orchestration commands.
+The skill is included in this repository and can be installed into target projects via `install.sh`.
 
 ### Live Monitoring
 
@@ -643,6 +643,12 @@ tmux kill-session -t ralph-010
 ## License
 
 MIT
+
+## Support
+
+- Questions and support: `team@t-0.co`
+- Issues and PRs are welcome
+- Contributions are welcome
 
 ## Credits
 

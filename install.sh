@@ -11,7 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_MODE="symlink"  # symlink or copy
 TARGET_DIR=""
 GLOBAL_INSTALL=false
-INSTALL_ORCHESTRATOR_SKILL=false
+INSTALL_ORCHESTRATOR_SKILL=true
 
 print_banner() {
     cat <<'EOF'
@@ -37,7 +37,9 @@ Options:
   --symlink     Create symlinks to source (default, for development)
   --copy        Copy files to target (for standalone installation)
   --with-orchestrator-skill
-                Install `/ralph` command + `workspace-ralph-orchestrator` skill into target `.claude/`
+                Install `/ralph` command + `workspace-ralph-orchestrator` skill into target `.claude/` (default: on)
+  --no-orchestrator-skill
+                Skip installing orchestrator command/skill into target `.claude/`
   --global      Install globally to ~/.local/bin
   --uninstall   Remove Ralph from target project
   --help        Show this help
@@ -57,6 +59,9 @@ Examples:
 
   # Copy mode + orchestrator command/skill
   ./install.sh --copy --with-orchestrator-skill /path/to/project
+
+  # Copy mode without orchestrator command/skill
+  ./install.sh --copy --no-orchestrator-skill /path/to/project
 
   # Uninstall from project
   ./install.sh --uninstall /path/to/project
@@ -246,6 +251,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         --with-orchestrator-skill)
             INSTALL_ORCHESTRATOR_SKILL=true
+            shift
+            ;;
+        --no-orchestrator-skill)
+            INSTALL_ORCHESTRATOR_SKILL=false
             shift
             ;;
         --global)
