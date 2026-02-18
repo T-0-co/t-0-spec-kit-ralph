@@ -1,0 +1,21 @@
+# Ralph state directories (created in target projects)
+.ralph/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Temp files
+*.tmp
+*.bak
+
+# Python artifacts
+__pycache__/
+*.pyc
