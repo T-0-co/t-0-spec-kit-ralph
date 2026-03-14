@@ -676,6 +676,8 @@ Based on:
 - [Anthropic: Claude Code Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices)
 - [Parallel AI Coding with Git Worktrees](https://docs.agentinterviews.com/blog/parallel-ai-coding-with-gitworktrees/)
 
+[Read more about autonomous Software Development with the Ralph Wiggum Technique on the T-0 Blog (German)](https://t-0.co/ralph-wiggum-loop-24-7-autonome-softwareentwicklung-mit-spec-kit/)
+
 ---
 
 Made with 🦭 by [T-0](https://t-0.co)
