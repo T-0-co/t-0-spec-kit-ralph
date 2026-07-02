@@ -120,47 +120,6 @@ ls -lt "$CLAUDE_PROJECT_PATH"/*.jsonl | head -5
 ps aux | grep claude | grep -v grep
 ```
 
-### Read Session Transcript
-
-```bash
-# Get recent assistant messages (what Claude said/did)
-SESSION_FILE="<path_to_session>.jsonl"
-tail -50 "$SESSION_FILE" | jq -r '
-  select(.type == "assistant") |
-  .message.content[] |
-  select(.type == "text") |
-  .text' 2>/dev/null | tail -30
-```
-
-### View Claude's Todo List
-
-Ralph's Claude often uses TodoWrite to track subtasks:
-
-```bash
-# Find the todo file for the session
-SESSION_ID="<session-id>"
-cat ~/.claude/todos/${SESSION_ID}-agent-${SESSION_ID}.json 2>/dev/null | jq -r '.[] |
-  if .status == "completed" then "✅ \(.content)"
-  elif .status == "in_progress" then "🔄 \(.content)"
-  else "⬚ \(.content)"
-  end'
-```
-
-### Extract Claude's Recent Actions
-
-```bash
-# Get last 20 tool calls and responses
-SESSION_FILE="<path>.jsonl"
-tail -100 "$SESSION_FILE" | jq -r '
-  if .type == "assistant" then
-    if .message.content[0].text then "CLAUDE: " + .message.content[0].text[:200]
-    elif .message.content[0].type == "tool_use" then "TOOL: " + .message.content[0].name
-    else empty
-    end
-  else empty
-  end' 2>/dev/null | tail -20
-```
-
 ## Starting a Single Loop
 
 Start Ralph in a tmux session:
@@ -219,30 +178,7 @@ fi
 OPEN_CONTEXT_VIEWER=false  # Set before starting Ralph
 ```
 
-**Progress terminal (recommended):**
-```bash
-# Simple single-column layout with auto-refresh (default)
-.claude/skills/workspace-ralph-orchestrator/ralph-context.sh <spec_dir> --simple --loop
-
-# Example:
-.claude/skills/workspace-ralph-orchestrator/ralph-context.sh specs/001-my-feature --simple --loop
-```
-
-**Available flags:**
-| Flag | Description |
-|------|-------------|
-| `--loop` | Auto-refresh (default 1s; override with `RALPH_CONTEXT_REFRESH_SECS`) |
-| `--simple` | Single-column layout (less visual noise) |
-| `--width=N` | Force specific terminal width |
-
-**What the context viewer shows:**
-- Progress (current task, completion %)
-- Claude's todo list (subtasks)
-- Skills being used
-- Recent tool calls
-- Docker container health
-- Port status (3000/3001)
-- Stop file status
+**Flags for `ralph-context.sh`:** `--loop` (auto-refresh, `RALPH_CONTEXT_REFRESH_SECS` overrides the 1s default), `--simple` (single-column), `--width=N`. What it shows: see "Quick Context" above.
 
 ## Parallel Task Batches
 
@@ -531,15 +467,3 @@ This fixes trackpad scrolling in attached tmux sessions.
 ### Skill Files
 - `.claude/skills/workspace-ralph-orchestrator/SKILL.md` - This documentation
 - `.claude/skills/workspace-ralph-orchestrator/ralph-context.sh` - Context helper script
-
-## Future Improvements
-
-- [ ] **Streaming output**: Use `tee` to show Claude output in terminal while capturing
-- [x] **Progress excerpts**: Auto-extract and display Claude's TodoWrite items (see `ralph-context.sh`)
-- [x] **Graceful stop**: Stop file mechanism (`.ralph/.stop`)
-- [x] **Container health**: Docker status and port checks in context script
-- [x] **Skill tracking**: Show skills used in session
-- [x] **Parallel batches**: Execute `[P]` tasks via Claude subagents
-- [x] **Subagent visualization**: Dashboard shows subagent status with distinct icons
-- [ ] **Webhook notifications**: POST progress updates to external services
-- [ ] **Cost tracking**: Parse and accumulate token usage from Claude sessions
